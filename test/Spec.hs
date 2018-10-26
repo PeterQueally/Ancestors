@@ -24,7 +24,8 @@ simpleTests
     (size (fromList [1,3,5]) @?= 3),
     testCase "test 3"
     (size (fromList []) @?= 0)
-
+    testCase "test 4"
+    (size (fromList [5]) @?= 1)
 
   ]
 
