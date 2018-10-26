@@ -1,29 +1,46 @@
-{-# LANGUAGE StandaloneDeriving #-}
-
 module Main where
 
-import Test.Hspec (it, describe, shouldBe, Spec)
+import Test.HUnit
+import Test.Framework as TF (defaultMain, testGroup, Test)
+import Test.Framework.Providers.HUnit (testCase)
 
-import Lib
 
-spec :: Spec 
-spec =         
-  describe "Lca function" $ do
+import LCA
+{- Hunit Tests -}
+main = defaultMain tests
+-- Test to see if the BST can be created in a normal case
+tests :: [TF.Test]
+tests = [ testGroup "LCA Tests"
+          [simpleTests
+          ]
+        ]
 
-    it "returns Left False for empty tree" $ do
-      (lca emptyTree 1 2) `shouldBe` Left False
+simpleTests:: TF.Test
+simpleTests
+ = testGroup "\nPart 1 simple\n"
+  [ testCase "test 1"
+    (size (fromList [1,2,3,4]) @?= 4),
+    testCase "test 2"
+    (size (fromList [1,3,5]) @?= 3),
+    testCase "test 3"
+    (size (fromList []) @?= 0)
 
-    it "returns 1 for lca 1 1" $ do
-      (lca testTree 1 1) `shouldBe` Right 1
 
-    it "returns 1 for lca 2 3" $ do
-          (lca testTree 2 3) `shouldBe` Right 1
+  ]
 
-    it "returns 2 for lca 4 9" $ do
-      (lca testTree 4 9) `shouldBe` Right 2
+-- BSTtest = BST (1,2)
+-- BSTtest = BST (BSTtest,3)
+-- Tests = test [ "test1" ~: "for (BST create 1)" ~: (True) ~=? (bstContains (BSTtest , 1) ),
+--               "test2" ~: "for (BST create 2)" ~: (True) ~=? (bstContains (BSTtest , 2) ),
+--               "test3" ~: "for (BST create 3)" ~: (True) ~=? (bstContains (BSTtest , 3) )]
 
-    it "returns Left True for lca 4 100" $ do
-      (lca testTree 4 100) `shouldBe` Left True
-
-    it "returns Left False for lca 80 100" $ do
-      (lca testTree 80 100) `shouldBe` Left False 
+{-- Test to see if BST return correct error for a empty tree
+test3 :: Test
+Test3 = testCase (assertBool "for (BST)")
+-- Test if bstContains can correctly find a value in a given BST
+test2 :: Test
+Test2 = testCase (assertBool "for (bstContains)")
+-- Test if bstContains will return false correctly
+test3 :: Test
+Test3 = testCase (assertEqual "for (bstContains)")
+-}
