@@ -14,9 +14,10 @@ tests = [ testGroup "LCA Tests"
           [simpleTests
           ]
         ]
-        
-xs = fromList [6,4,2,1]
-ys = fromList [7,5,3,2,1]
+      
+ts = fromList [9,8,7]        
+us = fromList [6,4,2,1]
+ds = fromList [7,5,3,2,1]
 zs = fromList [8,4,2,1]
 emptyls = fromList []
 
@@ -25,22 +26,26 @@ simpleTests
  = testGroup "\nPart 1 simple\n"
   [ testCase "test length of 4"
     (size (fromList [1,2,3,4]) @?= 4),
-    testCase "test length of 3"
-    (size (fromList [1,3,5]) @?= 3),
-    testCase "test empty set"
-    (size (fromList []) @?= 0),
     testCase "test length of 1"
     (size (fromList [5]) @?= 1),
     testCase "size of empty lists"
     (size (emptyls) @?= 0),
     testCase "empty path"
-    (toList  (lca xs emptyls) @?= []),
+    (toList  (lca us emptyls) @?= []),
     testCase "both empty and same path"
     (toList (lca emptyls emptyls) @?= []),
     testCase "lca of two normal paths of diffrent lengths"
-    (toList (lca xs ys) @?= [2,1]),
+    (toList (lca us ds) @?= [2,1]),
     testCase "lca of two normal paths of same lengths"
-    (toList (lca' xs zs) @?= [4,2,1])
+    (toList (lca' us zs) @?= [4,2,1]),
+    testCase "testing keep of 0 of two paths"
+   (toList(keep 0 (lca xs ys)) @?= []),
+   testCase "testing keep of 2"
+   (toList(keep 2 (lca xs ys)) @?= [2,1]),
+   testCase "lca with no match"
+   (toList(lca xs ts) @?= []),
+   testCase "lca of the same paths"
+   (lca xs xs @?= xs)
 
   ]
 
