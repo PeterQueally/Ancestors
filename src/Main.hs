@@ -1,5 +1,5 @@
 module Main where
 
-import LCA
+import Graph
 
 main = putStrLn "Hello World :-)"
