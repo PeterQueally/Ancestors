@@ -4,8 +4,8 @@ version:             0.1.0.0
 synopsis:            CS3016 Exercise One
 license:             BSD3
 license-file:        LICENSE
-author:              Calum
-maintainer:          Cacomerf@tcd.ie
+author:              Peter
+maintainer:          Queallp@tcd.ie
 category:            Game
 build-type:          Simple
 cabal-version:       >=1.10
