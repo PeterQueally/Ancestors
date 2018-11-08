@@ -1,5 +1,10 @@
 module Main where
 
+import ArbitraryGraph
+import BigGraph
+import BigTree
+import Data.Maybe
+import SampleTree
 import Test.Tasty
 import Test.Tasty.QuickCheck as QC
 import Test.Tasty.HUnit
