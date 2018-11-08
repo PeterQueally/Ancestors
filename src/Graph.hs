@@ -67,5 +67,43 @@ followNode g p = tryGetLast $ nodesAlongPath g p
 
 follow :: Graph a -> GraphPath -> Maybe a
 follow graph path = case followNode graph path of
-    Just (Node a _ _) -> Just a
-    _ -> Nothing
+Just (Node a _ _) -> Just a
+_ -> Nothing
+
+replaceNode :: (Graph a -> Graph a) -> Graph a -> GraphPath -> Graph a
+replaceNode f Empty _ = f Empty
+replaceNode f n [] = f n
+replaceNode f (Blank l r) (GraphLeft : xs) = Blank (replaceNode f l xs) r
+replaceNode f (Blank l r) (GraphRight : xs) = Blank l (replaceNode f r xs)
+replaceNode f (Node a l r) (GraphLeft : xs) = Node a (replaceNode f l xs) r
+replaceNode f (Node a l r) (GraphRight : xs) = Node a l (replaceNode f r xs)
+
+insertElement :: Graph a -> GraphPath -> a -> Graph a
+insertElement g p el = replaceNode f g p
+    where
+        f n = Node el n Empty
+
+insertNode :: Graph a -> GraphPath -> Graph a -> Graph a
+insertNode g p subGraph = replaceNode (Blank subGraph) g p
+
+graphToList :: Graph a -> [Graph a]
+graphToList (Node el l r) = Node el l r : graphToList l ++ graphToList r
+graphToList (Blank l r) = graphToList l ++ graphToList r
+graphToList Empty = [Empty]    
+
+treeFromList :: [a] -> Graph a
+treeFromList lst = head $ formTree $ treePartition 1 lst
+    where
+        treePartition :: Int -> [a] -> [[a]]
+        treePartition _ [] = []
+        treePartition stage lst = take stage lst :
+            treePartition (stage * 2) (drop stage lst)
+
+        formTree :: [[a]] -> [Graph a]
+        formTree = foldr treeLayer [Empty]
+
+        treeLayer :: [a] -> [Graph a] -> [Graph a]
+        treeLayer [] _ = []
+        treeLayer (x : xs) [] = lastNode x : treeLayer xs []
+        treeLayer (x : xs) [a] = Node x a Empty : treeLayer xs []
+        treeLayer (x : xs) (y1 : y2 : ys) = Node x y1 y2 : treeLayer xs ys
