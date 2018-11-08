@@ -59,4 +59,75 @@ pathFollowTests = testGroup "Path & Follow"
     , QC.testProperty "and ((== Just el) $ fmap (follow root) (path root el))"
         testFollowPath
     ]      
+    
+data GraphType = Tree | Graph deriving Eq
+
+lcaTests = testGroup "LCA" (
+
+    (map (\(expect, t, graphName, graph, a, b) -> testCase ("LCA of " ++
+    (if t == Tree then "tree" else "graph") ++ " " ++ graphName ++
+    " with els: " ++ show a ++ " and " ++ show b ++ ", is " ++ show expect)
+        ((expect :: Maybe Int) @=? lca graph a b)) $
+
+    (map (\(exp, tree, a, b) -> (exp, Tree, show tree, FullGraph [tree], a, b))
+    -- (e, t, a, b)
+    [ (Nothing, Empty, 1, 2)
+    , (Just 1, Node 3 Empty (lastNode 1), 1, 1)
+    , (Just 3, Node 3 Empty (lastNode 1), 3, 1)
+    ]) ++
+
+    (map (\(exp, a, b) -> (exp, Tree, "sampleTree", FullGraph [sampleTree], a, b))
+    -- (e, a, b)
+    [ (Nothing, 300, 200)
+    , ( Just 5,   1, 451)
+    ]) ++
+
+    (map (\(a, b, e) -> (Just e, Tree, "bigTree", FullGraph [bigTree], a, b))
+    --( a,  b,  e)
+    [ ( 1,  2, 33)
+    , ( 4,  5, 57)
+    , ( 8,  9, 61)
+    , (16, 17, 63)
+    , (24, 25, 62)
+    , (35, 50, 50)
+    , (37, 37, 37)
+    , (37, 39, 58)
+    , (63, 63, 63)
+    , (60,  9, 63)
+    ]) ++
+
+    (map (\(a, b, e) -> (e, Graph, "bigGraph", bigGraph, a, b))
+
+    [ (16, 25, Just  25)
+    , (58, 60, Just  62)
+    , (28, 40, Just  55)
+    , (12, 16, Just  58)
+    , (57, 62, Just 100)
+    , (49, 56, Just 100)
+    , (38, 34, Just  61)
+    ])) ++
+
+    [ QC.testProperty
+        "LCA of (abs <num1> + 64) <num2> in bigTree is Nothing" testNoLCA
+    ])
+
+tests :: TestTree
+tests = testGroup "Graph"
+    [ constructorTests
+    , functorTests
+    , pathFollowTests
+    , insertElementTests
+    , lcaTests
+    ]
+
+treeToFive =
+    Node 0
+        (Node 1
+            (lastNode 3)
+            (lastNode 4)
+        )
+        (Node 2
+            (lastNode 5)
+            Empty
+        )    
 
