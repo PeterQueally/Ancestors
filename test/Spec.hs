@@ -131,3 +131,30 @@ treeToFive =
             Empty
         )    
 
+allGraphs :: (Graph a -> Bool) -> [Graph a] -> Bool
+allGraphs f gs = all f gs
+
+testInsertElementEq :: FullGraph Int -> GraphPath -> Int -> Bool
+testInsertElementEq (FullGraph gs) p a =
+    allGraphs (\g -> g /= insertElement g p a) gs
+
+testNoLCA :: Int -> Bool
+testNoLCA aa =
+    let a = abs aa + bigTreeEnd + 1 in
+        isNothing (lca (FullGraph [bigTree]) bigTreeStart a)
+
+testLastNode :: Int -> Bool
+testLastNode a = Node a Empty Empty == lastNode a
+
+testFollowPath :: FullGraph Int -> [GraphDir] -> Int -> Bool
+testFollowPath (FullGraph gs) p a =
+    allGraphs lead gs
+    where
+        lead :: Graph Int -> Bool
+        lead g = let newGraph = insertElement g p a in
+            and (fmap ((== Just a) . follow newGraph) (paths newGraph a))
+
+fmapInversions :: FullGraph Int -> Bool
+fmapInversions (FullGraph gs) =
+    allGraphs (\g -> g == fmap ((* (-1)) . (* (-1))) g) gs
+

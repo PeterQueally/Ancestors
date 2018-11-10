@@ -107,3 +107,27 @@ treeFromList lst = head $ formTree $ treePartition 1 lst
         treeLayer (x : xs) [] = lastNode x : treeLayer xs []
         treeLayer (x : xs) [a] = Node x a Empty : treeLayer xs []
         treeLayer (x : xs) (y1 : y2 : ys) = Node x y1 y2 : treeLayer xs ys
+        
+lca :: Ord a => FullGraph a -> a -> a -> Maybe a
+lca (FullGraph roots) el1 el2 =
+    let
+        ancestorsA = ancestors el1
+        ancestorsB = ancestors el2
+        sharedAncestors = Set.toList $ Set.intersection ancestorsA ancestorsB
+
+        -- all posible paths from all roots to all sharedAncestors, we've
+        -- concatenated the paths from different roots, because we only care
+        -- about which ancestor has the longest minimum path length
+        pathsToAncestors =
+            map (\a -> concatMap (`paths` a) roots) sharedAncestors
+
+        shortestPathLengths = map (minimum . map length) pathsToAncestors
+
+        mostNestedAncestor = if null sharedAncestors then
+            Nothing else
+            Just (fst (maximumBy (\(_, a) (_, b) -> compare a b)
+                (zip sharedAncestors shortestPathLengths)))
+    in mostNestedAncestor
+        where
+            ancestors el = Set.fromList $
+                roots >>= \root -> paths root el >>= elsAlongPath root        
