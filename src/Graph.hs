@@ -67,8 +67,8 @@ followNode g p = tryGetLast $ nodesAlongPath g p
 
 follow :: Graph a -> GraphPath -> Maybe a
 follow graph path = case followNode graph path of
-Just (Node a _ _) -> Just a
-_ -> Nothing
+      Just (Node a _ _) -> Just a
+      _ -> Nothing
 
 replaceNode :: (Graph a -> Graph a) -> Graph a -> GraphPath -> Graph a
 replaceNode f Empty _ = f Empty
